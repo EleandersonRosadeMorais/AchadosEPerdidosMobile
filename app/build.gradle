@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -29,7 +30,27 @@ android {
 }
 
 dependencies {
+// Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:34.6.0')
+    // Firebase Authentication (login/cadastro de usuários)
+    implementation 'com.google.firebase:firebase-auth'
 
+// Cloud Firestore (banco de dados para itens perdidos)
+    implementation 'com.google.firebase:firebase-firestore'
+
+// Firebase Storage (armazenar fotos dos itens)
+    implementation 'com.google.firebase:firebase-storage'
+
+    // Firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database'
+
+    // Glide para carregar imagens de URL
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    // https://firebase.google.com/docs/android/setup#available-libraries
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
@@ -37,4 +58,5 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
 }

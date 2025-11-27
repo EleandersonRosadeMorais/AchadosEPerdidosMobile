@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="12dp"
-    android:background="?android:attr/selectableItemBackground"
-    android:gravity="center_vertical">
-
-    <!-- Bloco de textos à esquerda -->
-    <LinearLayout
-        android:layout_width="277dp"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/txtNomeItem"
@@ -34,23 +25,40 @@
             android:textSize="22sp" />
 
         <TextView
+            android:id="@+id/txtEncontrado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:text="Encontrado em: "
+            android:textColor="#333333"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/txtDataEncontrada"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:text="Data encontrado: "
+            android:textColor="#333333"
+            android:textSize="22sp" />
+
+        <TextView
             android:id="@+id/txtTipo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:paddingBottom="15dp"
-            android:text="Tipo"
+            android:text="Tipo: "
             android:textColor="#333333"
             android:textSize="22sp" />
-    </LinearLayout>
 
-    <!-- Miniatura à direita -->
     <ImageView
         android:id="@+id/imgMiniatura"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/moletom"
-        android:scaleType="centerCrop"
+        android:layout_width="114dp"
+        android:layout_height="114dp"
+        android:layout_gravity="center"
         android:layout_marginStart="12dp"
-        android:contentDescription="Miniatura do item"/>
+        android:contentDescription="Miniatura do item"
+        android:scaleType="centerCrop"
+        android:src="@drawable/moletom" />
 </LinearLayout>

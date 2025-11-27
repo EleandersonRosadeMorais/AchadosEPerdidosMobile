@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85249373816",
+    "project_id": "achadosperdidos-e4c4b",
+    "storage_bucket": "achadosperdidos-e4c4b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85249373816:android:91ed679f1b7fa187475f8d",
+        "android_client_info": {
+          "package_name": "com.ulbra.achadoseperdidos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdOExiUaCHppnAfZqq6EIVwu_o2SC4LZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
