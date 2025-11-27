@@ -2,26 +2,21 @@ package com.ulbra.achadoseperdidos;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.util.Log;
-import androidx.activity.EdgeToEdge;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -42,10 +37,19 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void abrirLogin() {
+        Intent intent = new Intent(MenuActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+//    private void abrirSobre() {
+//        Intent intent = new Intent(MenuActivity.this, SobreActivity.class);
+//        startActivity(intent);
+//    }
+
     private void carregarDadosFirebase() {
         database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference ref = database.child("achados").child("itens");
-        // ou apenas database.child("achados") se não tiver o nó "itens"
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -71,7 +75,6 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +89,16 @@ public class MenuActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         btnMenu = findViewById(R.id.btnMenu);
 
-        btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+        // 🔹 Escolhe o menu conforme login
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_logado);
+        } else {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_nao_logado);
+        }
+
+        btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -95,14 +107,17 @@ public class MenuActivity extends AppCompatActivity {
                 abrirRegistroItem();
             } else if (id == R.id.nav_sair) {
                 FirebaseAuth.getInstance().signOut();
-                finish();
+                recreate(); // recarrega a activity para atualizar o menu
+            } else if (id == R.id.nav_conectar) {
+                abrirLogin();
+            } else if (id == R.id.nav_sobre) {
+                // abrirSobre();
             }
 
-            drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });
 
         carregarDadosFirebase();
     }
 }
-
