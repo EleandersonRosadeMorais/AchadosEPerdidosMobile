@@ -38,6 +38,7 @@
         android:id="@+id/btnSelecionarImagem"
         android:text="Selecionar Imagem"
         android:layout_width="match_parent"
+        android:backgroundTint="@color/beige"
         android:layout_height="wrap_content"/>
 
     <ImageView
@@ -49,6 +50,7 @@
     <Button
         android:id="@+id/btnSalvar"
         android:text="Salvar Item"
+        android:backgroundTint="@color/beige"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

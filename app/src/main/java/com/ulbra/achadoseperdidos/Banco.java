@@ -48,4 +48,24 @@ public class Banco {
     public void setEncontrado(String encontrado) {
         this.encontrado = encontrado;
     }
+
+    public void setNomeItem(String nomeItem) {
+        this.nomeItem = nomeItem;
+    }
+
+    public void setLocalizacao(String localizacao) {
+        this.localizacao = localizacao;
+    }
+
+    public void setDataEncontrada(String dataEncontrada) {
+        this.dataEncontrada = dataEncontrada;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
+    }
 }
