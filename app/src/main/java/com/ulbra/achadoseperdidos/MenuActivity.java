@@ -42,10 +42,10 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-//    private void abrirSobre() {
-//        Intent intent = new Intent(MenuActivity.this, SobreActivity.class);
-//        startActivity(intent);
-//    }
+    private void abrirSobre() {
+        Intent intent = new Intent(MenuActivity.this, SobreActivity.class);
+        startActivity(intent);
+    }
 
     private void carregarDadosFirebase() {
         database = FirebaseDatabase.getInstance().getReference();
@@ -111,7 +111,7 @@ public class MenuActivity extends AppCompatActivity {
             } else if (id == R.id.nav_conectar) {
                 abrirLogin();
             } else if (id == R.id.nav_sobre) {
-                // abrirSobre();
+                abrirSobre();
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);
