@@ -9,11 +9,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.ulbra.achadoseperdidos.api.ApiClient;
+import com.ulbra.achadoseperdidos.api.ApiService;
+import com.ulbra.achadoseperdidos.models.LoginRequest;
+import com.ulbra.achadoseperdidos.models.LoginResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText edtEmail, edtSenha, edtNome;
+    private EditText edtEmail, edtSenha;
     private Button btnLogin;
 
     @Override
@@ -23,10 +30,8 @@ public class LoginActivity extends AppCompatActivity {
 
         edtEmail = findViewById(R.id.edtEmail);
         edtSenha = findViewById(R.id.edtSenha);
-        edtNome  = findViewById(R.id.edtNome);
         btnLogin = findViewById(R.id.btnLogin);
 
-        // 🔹 Botão de Login
         btnLogin.setOnClickListener(v -> {
             String email = edtEmail.getText().toString().trim();
             String senha = edtSenha.getText().toString().trim();
@@ -36,18 +41,39 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            FirebaseHelper.getAuth().signInWithEmailAndPassword(email, senha)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-                            finish();
-                        } else {
-                            String erro = task.getException() != null ? task.getException().getMessage() : "Erro desconhecido";
-                            Toast.makeText(this, "Erro: " + erro, Toast.LENGTH_LONG).show();
-                            Log.e("LoginActivity", "Erro login: " + erro);
-                        }
-                    });
+            fazerLogin(email, senha);
+        });
+    }
+
+    private void fazerLogin(String email, String senha) {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        LoginRequest request = new LoginRequest(email, senha);
+
+        Call<LoginResponse> call = apiService.login(request);
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse loginResponse = response.body();
+
+                    if (loginResponse.isSuccess()) {
+                        Toast.makeText(LoginActivity.this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Erro: " + loginResponse.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Erro no servidor: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Falha na conexão: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("LoginActivity", "Erro login: " + t.getMessage());
+            }
         });
     }
 }

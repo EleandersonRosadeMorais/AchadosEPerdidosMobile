@@ -12,12 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +21,6 @@ public class MenuActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Banco> listaItens = new ArrayList<>();
     private ItemAdapter adapter;
-    private DatabaseReference database;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ImageView btnMenu;

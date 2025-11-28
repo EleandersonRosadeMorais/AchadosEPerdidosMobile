@@ -23,6 +23,7 @@
         <activity android:name=".RegistroItemActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SobreActivity" />
+        <activity android:name=".CadastroAdminActivity" />
 
     </application>
 

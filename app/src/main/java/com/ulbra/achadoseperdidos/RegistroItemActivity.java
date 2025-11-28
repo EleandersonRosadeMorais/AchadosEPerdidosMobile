@@ -9,11 +9,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +19,6 @@ public class RegistroItemActivity extends AppCompatActivity {
     private Button btnSalvar, btnSelecionarImagem;
     private ImageView imgPreview;
     private Uri imagemSelecionada;
-
-    private DatabaseReference database;
-    private StorageReference storageRef;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
