@@ -54,4 +54,29 @@ o Ian deu continuidade em seus cards e em seus novos cards, completando várias 
 - Implementou o arquvio JSON
 
 ## Dia 3 — 27/11/2025
+
+### [SM] Eleanderson Rosa de Morais
+
+Hoje apos uma breve reuniao de equipe, decidimos migrar o banco de dados do FireBase para o MYSQL afim de usar um servidor para hospeador nosso banco de dados, com isso eu criei o Diagrama DER do banco de dados, criei o banco de dados em .sql e organizei a nossa Sprint e os cards que temos que fazer ate o fim do projeto, que no total foram 10 cards os mesmos estarao aqui em baixo: 
+
+### Kanban 
+
+[FD] Implementar filtro por categoria no menu príncipal
+[QA] Testar tela de cadastrar administrador
+[QA] Testar tela sobre
+[QA] Testar menu de cadastrar itens
+[QA] Testar tela de login
+[BD] Criar arquivo .java das funções do menu
+[BD] criar arquivo .java das funções do Administrador
+[BD] Migrar os códigos referentes ao banco de dados Firebase para o MYSQL
+[FD] Tela para cadastrar administrador
+[SM] Criar banco de dados MYSQL
+[FD] Criar tela de sobre
+[SM] Criar Diagrama DER
+
+### [Dev] Ian Franco
+
+Ian nao foi muito produtivo por conta da mudanca do banco de dados, isso retardou um pouco o progesso do projeto, e no dia seguinte nao havera progresso, pois ele como responsavel do projeto ira viajar, ate agora ele apenas aprimorou alguns codigos e ficou apenas em andamento na Sprint.
+
+## Dia 4 — 28/11/2025
 *(aguardando conteúdo)*
