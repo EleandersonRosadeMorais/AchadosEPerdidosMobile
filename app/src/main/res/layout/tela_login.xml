@@ -14,14 +14,6 @@
         android:contentDescription="Ícone Escola"
         android:layout_marginBottom="32dp"/>
 
-    <!-- Campo Nome -->
-    <EditText
-        android:id="@+id/edtNome"
-        android:hint="Nome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
-
     <!-- Campo Email -->
     <EditText
         android:id="@+id/edtEmail"

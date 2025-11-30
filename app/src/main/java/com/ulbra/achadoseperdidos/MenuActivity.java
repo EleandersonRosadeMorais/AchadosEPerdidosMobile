@@ -12,58 +12,58 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ulbra.achadoseperdidos.api.ApiClient;
+import com.ulbra.achadoseperdidos.api.ApiService;
+import com.ulbra.achadoseperdidos.models.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<Banco> listaItens = new ArrayList<>();
+    private List<Item> listaItens = new ArrayList<>();
     private ItemAdapter adapter;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ImageView btnMenu;
 
     private void abrirRegistroItem() {
-        Intent intent = new Intent(MenuActivity.this, RegistroItemActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MenuActivity.this, RegistroItemActivity.class));
     }
 
     private void abrirLogin() {
-        Intent intent = new Intent(MenuActivity.this, LoginActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
     }
 
     private void abrirSobre() {
-        Intent intent = new Intent(MenuActivity.this, SobreActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MenuActivity.this, SobreActivity.class));
     }
 
-    private void carregarDadosFirebase() {
-        database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref = database.child("achados").child("itens");
+    // 🔹 Agora busca itens via API (Retrofit + MySQL)
+    private void carregarItensApi() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<List<Item>> call = apiService .listarItens   ();
 
-        ref.addValueEventListener(new ValueEventListener() {
+        call.enqueue(new Callback<List<Item>>() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                listaItens.clear();
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    String nomeItem = item.child("nomeItem").getValue(String.class);
-                    String localizacao = item.child("localizacao").getValue(String.class);
-                    String dataEncontrada = item.child("dataEncontrada").getValue(String.class);
-                    String encontrado = item.child("encontrado").getValue(String.class);
-                    String tipo = item.child("tipo").getValue(String.class);
-                    String imagemUrl = item.child("imagemUrl").getValue(String.class);
-
-                    listaItens.add(new Banco(nomeItem, localizacao, dataEncontrada, tipo, imagemUrl, encontrado));
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaItens.clear();
+                    listaItens.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.e("MenuActivity", "Erro ao carregar itens: " + response.code());
                 }
-                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e("Firebase", "Erro ao carregar dados", error.toException());
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+                Log.e("MenuActivity", "Falha na conexão: " + t.getMessage());
             }
         });
     }
@@ -82,8 +82,8 @@ public class MenuActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         btnMenu = findViewById(R.id.btnMenu);
 
-        // 🔹 Escolhe o menu conforme login
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        // 🔹 Escolhe o menu conforme login (usando SharedPreferences ou UsuarioSession)
+        if (UsuarioSession.isLoggedIn(this)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_logado);
         } else {
@@ -96,10 +96,12 @@ public class MenuActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_registro) {
+            if (id == R.id.nav_funcionario) {
+                startActivity(new Intent(this, CadastroAdminActivity.class));
+            } else if (id == R.id.nav_registro) {
                 abrirRegistroItem();
             } else if (id == R.id.nav_sair) {
-                FirebaseAuth.getInstance().signOut();
+                UsuarioSession.logout(this);
                 recreate(); // recarrega a activity para atualizar o menu
             } else if (id == R.id.nav_conectar) {
                 abrirLogin();
@@ -111,6 +113,6 @@ public class MenuActivity extends AppCompatActivity {
             return true;
         });
 
-        carregarDadosFirebase();
+        carregarItensApi(); // 🔹 agora busca itens via API
     }
 }

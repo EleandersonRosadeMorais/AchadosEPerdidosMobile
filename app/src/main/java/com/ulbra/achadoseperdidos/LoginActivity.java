@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ulbra.achadoseperdidos.api.ApiClient;
 import com.ulbra.achadoseperdidos.api.ApiService;
+import com.ulbra.achadoseperdidos.models.ApiResponse;
 import com.ulbra.achadoseperdidos.models.LoginRequest;
-import com.ulbra.achadoseperdidos.models.LoginResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,28 +50,36 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginRequest request = new LoginRequest(email, senha);
 
-        Call<LoginResponse> call = apiService.login(request);
-        call.enqueue(new Callback<LoginResponse>() {
+        Call<ApiResponse> call = apiService.login(request);
+        call.enqueue(new Callback<ApiResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    LoginResponse loginResponse = response.body();
+                    ApiResponse apiResponse = response.body();
 
-                    if (loginResponse.isSuccess()) {
-                        Toast.makeText(LoginActivity.this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show();
+                    if (apiResponse.isSuccess()) {
+                        Toast.makeText(LoginActivity.this,
+                                "Login realizado com sucesso!",
+                                Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Erro: " + loginResponse.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this,
+                                "Erro: " + apiResponse.getMessage(),
+                                Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "Erro no servidor: " + response.code(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,
+                            "Erro no servidor: " + response.code(),
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Falha na conexão: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this,
+                        "Falha na conexão: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
                 Log.e("LoginActivity", "Erro login: " + t.getMessage());
             }
         });
