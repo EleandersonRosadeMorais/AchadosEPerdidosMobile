@@ -2,8 +2,13 @@ package com.ulbra.achadoseperdidos;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -12,67 +17,86 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.ulbra.achadoseperdidos.api.ApiClient;
+import com.ulbra.achadoseperdidos.api.ApiService;
+import com.ulbra.achadoseperdidos.models.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<Banco> listaItens = new ArrayList<>();
+    private List<Item> listaItens = new ArrayList<>();
     private ItemAdapter adapter;
-    private DatabaseReference database;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ImageView btnMenu;
 
+    // 🔹 Elementos para filtro (sem botão)
+    LinearLayout filterContainer;
+    EditText editFiltro;
+    Spinner spinnerFiltro;
+
     private void abrirRegistroItem() {
-        Intent intent = new Intent(MenuActivity.this, RegistroItemActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MenuActivity.this, RegistroItemActivity.class));
     }
 
     private void abrirLogin() {
-        Intent intent = new Intent(MenuActivity.this, LoginActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
     }
 
     private void abrirSobre() {
-        Intent intent = new Intent(MenuActivity.this, SobreActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(MenuActivity.this, SobreActivity.class));
     }
 
-    private void carregarDadosFirebase() {
-        database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref = database.child("achados").child("itens");
+    // 🔹 Busca itens via API (Retrofit + MySQL)
+    private void carregarItensApi() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<List<Item>> call = apiService.listarItens();
 
-        ref.addValueEventListener(new ValueEventListener() {
+        call.enqueue(new Callback<List<Item>>() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                listaItens.clear();
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    String nomeItem = item.child("nomeItem").getValue(String.class);
-                    String localizacao = item.child("localizacao").getValue(String.class);
-                    String dataEncontrada = item.child("dataEncontrada").getValue(String.class);
-                    String encontrado = item.child("encontrado").getValue(String.class);
-                    String tipo = item.child("tipo").getValue(String.class);
-                    String imagemUrl = item.child("imagemUrl").getValue(String.class);
-
-                    listaItens.add(new Banco(nomeItem, localizacao, dataEncontrada, tipo, imagemUrl, encontrado));
+            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listaItens.clear();
+                    listaItens.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.e("MenuActivity", "Erro ao carregar itens: " + response.code());
                 }
-                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e("Firebase", "Erro ao carregar dados", error.toException());
+            public void onFailure(Call<List<Item>> call, Throwable t) {
+                Log.e("MenuActivity", "Falha na conexão: " + t.getMessage());
             }
         });
+    }
+
+    // 🔹 Aplica filtro conforme texto e critério
+    private void aplicarFiltro(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            adapter.updateList(listaItens);
+            return;
+        }
+
+        String criterio = spinnerFiltro.getSelectedItem().toString();
+        List<Item> filtrados = new ArrayList<>();
+
+        for (Item item : listaItens) {
+            if (criterio.equals("Nome") && item.getNomeItem().toLowerCase().contains(texto.toLowerCase())) {
+                filtrados.add(item);
+            } else if (criterio.equals("Tipo") && item.getTipo().toLowerCase().contains(texto.toLowerCase())) {
+                filtrados.add(item);
+            }
+        }
+
+        adapter.updateList(filtrados);
     }
 
     @Override
@@ -89,8 +113,13 @@ public class MenuActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         btnMenu = findViewById(R.id.btnMenu);
 
-        // 🔹 Escolhe o menu conforme login
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        // 🔹 Ajusta largura do Drawer dinamicamente (até 50% da tela)
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int drawerWidth = (int) (screenWidth * 0.5);
+        navigationView.getLayoutParams().width = drawerWidth;
+
+        // 🔹 Configuração do menu conforme login
+        if (UsuarioSession.isLoggedIn(this)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_logado);
         } else {
@@ -103,11 +132,13 @@ public class MenuActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_registro) {
+            if (id == R.id.nav_funcionario) {
+                startActivity(new Intent(this, CadastroAdminActivity.class));
+            } else if (id == R.id.nav_registro) {
                 abrirRegistroItem();
             } else if (id == R.id.nav_sair) {
-                FirebaseAuth.getInstance().signOut();
-                recreate(); // recarrega a activity para atualizar o menu
+                UsuarioSession.logout(this);
+                recreate();
             } else if (id == R.id.nav_conectar) {
                 abrirLogin();
             } else if (id == R.id.nav_sobre) {
@@ -118,6 +149,24 @@ public class MenuActivity extends AppCompatActivity {
             return true;
         });
 
-        carregarDadosFirebase();
+        // 🔹 Configuração do filtro (sempre visível)
+        filterContainer = findViewById(R.id.filterContainer);
+        editFiltro = findViewById(R.id.editFiltro);
+        spinnerFiltro = findViewById(R.id.spinnerFiltro);
+
+        editFiltro.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                aplicarFiltro(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        carregarItensApi();
     }
 }
