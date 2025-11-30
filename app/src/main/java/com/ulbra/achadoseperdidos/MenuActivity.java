@@ -44,10 +44,10 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(new Intent(MenuActivity.this, SobreActivity.class));
     }
 
-    // 🔹 Agora busca itens via API (Retrofit + MySQL)
+    // 🔹 Busca itens via API (Retrofit + MySQL)
     private void carregarItensApi() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<List<Item>> call = apiService .listarItens   ();
+        Call<List<Item>> call = apiService.listarItens();
 
         call.enqueue(new Callback<List<Item>>() {
             @Override
@@ -82,7 +82,13 @@ public class MenuActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         btnMenu = findViewById(R.id.btnMenu);
 
-        // 🔹 Escolhe o menu conforme login (usando SharedPreferences ou UsuarioSession)
+        // 🔹 Ajusta largura do Drawer dinamicamente
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        // exemplo: 2/3 da tela
+        int drawerWidth = (int) (screenWidth * 0.55);
+        navigationView.getLayoutParams().width = drawerWidth;
+
+        // 🔹 Escolhe o menu conforme login
         if (UsuarioSession.isLoggedIn(this)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_logado);
@@ -113,6 +119,6 @@ public class MenuActivity extends AppCompatActivity {
             return true;
         });
 
-        carregarItensApi(); // 🔹 agora busca itens via API
+        carregarItensApi(); // 🔹 busca itens via API
     }
 }
