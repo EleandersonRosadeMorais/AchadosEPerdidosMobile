@@ -2,8 +2,13 @@ package com.ulbra.achadoseperdidos;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -31,6 +36,11 @@ public class MenuActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ImageView btnMenu;
+
+    // 🔹 Elementos para filtro (sem botão)
+    LinearLayout filterContainer;
+    EditText editFiltro;
+    Spinner spinnerFiltro;
 
     private void abrirRegistroItem() {
         startActivity(new Intent(MenuActivity.this, RegistroItemActivity.class));
@@ -68,6 +78,27 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
+    // 🔹 Aplica filtro conforme texto e critério
+    private void aplicarFiltro(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            adapter.updateList(listaItens);
+            return;
+        }
+
+        String criterio = spinnerFiltro.getSelectedItem().toString();
+        List<Item> filtrados = new ArrayList<>();
+
+        for (Item item : listaItens) {
+            if (criterio.equals("Nome") && item.getNomeItem().toLowerCase().contains(texto.toLowerCase())) {
+                filtrados.add(item);
+            } else if (criterio.equals("Tipo") && item.getTipo().toLowerCase().contains(texto.toLowerCase())) {
+                filtrados.add(item);
+            }
+        }
+
+        adapter.updateList(filtrados);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,13 +113,12 @@ public class MenuActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationView);
         btnMenu = findViewById(R.id.btnMenu);
 
-        // 🔹 Ajusta largura do Drawer dinamicamente
+        // 🔹 Ajusta largura do Drawer dinamicamente (até 50% da tela)
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        // exemplo: 2/3 da tela
-        int drawerWidth = (int) (screenWidth * 0.55);
+        int drawerWidth = (int) (screenWidth * 0.5);
         navigationView.getLayoutParams().width = drawerWidth;
 
-        // 🔹 Escolhe o menu conforme login
+        // 🔹 Configuração do menu conforme login
         if (UsuarioSession.isLoggedIn(this)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_logado);
@@ -108,7 +138,7 @@ public class MenuActivity extends AppCompatActivity {
                 abrirRegistroItem();
             } else if (id == R.id.nav_sair) {
                 UsuarioSession.logout(this);
-                recreate(); // recarrega a activity para atualizar o menu
+                recreate();
             } else if (id == R.id.nav_conectar) {
                 abrirLogin();
             } else if (id == R.id.nav_sobre) {
@@ -119,6 +149,24 @@ public class MenuActivity extends AppCompatActivity {
             return true;
         });
 
-        carregarItensApi(); // 🔹 busca itens via API
+        // 🔹 Configuração do filtro (sempre visível)
+        filterContainer = findViewById(R.id.filterContainer);
+        editFiltro = findViewById(R.id.editFiltro);
+        spinnerFiltro = findViewById(R.id.spinnerFiltro);
+
+        editFiltro.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                aplicarFiltro(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        carregarItensApi();
     }
 }

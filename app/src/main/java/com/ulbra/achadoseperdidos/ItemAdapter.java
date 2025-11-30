@@ -30,6 +30,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         return new ItemViewHolder(view);
     }
 
+    public void updateList(List<Item> novaLista) {
+        this.listaItens = novaLista;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = listaItens.get(position);

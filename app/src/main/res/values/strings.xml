@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Achados e perdidos</string>
+    <string-array name="opcoes_filtro">
+        <item>Nome</item>
+        <item>Tipo</item>
+    </string-array>
+
 </resources>
