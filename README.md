@@ -79,4 +79,32 @@ Hoje apos uma breve reuniao de equipe, decidimos migrar o banco de dados do Fire
 Ian nao foi muito produtivo por conta da mudanca do banco de dados, isso retardou um pouco o progesso do projeto, e no dia seguinte nao havera progresso, pois ele como responsavel do projeto ira viajar, ate agora ele apenas aprimorou alguns codigos e ficou apenas em andamento na Sprint.
 
 ## Dia 4 — 28/11/2025
-*(aguardando conteúdo)*
+
+### [SM] Eleanderson Rosa de Morais
+
+  Simplesmente eu não abri o repositório nesse dia!
+
+### [Dev] Ian Franco
+
+  Não compareceu.
+
+## Dia extra — (29/30)/11/2025
+
+### [SM] Eleanderson Rosa de Morais
+
+  Aceitei o merge do Ian e criei 5 cards para a sprint 2:
+
+### Kanban 
+
+[BD] baixar JSON para criar compatibilidade com o banco de dados
+[QA] Testar tela de cadastrar administrador
+[QA] Testar tela sobre
+[QA] Testar menu de cadastrar itens
+[QA] Testar tela de login
+
+### [Dev] Ian Franco
+
+  No fim de semana o Ian fez expansão de imagem que seria o item perdido maior na tela, criou a integração com o MYSQL e criou o filtro no menu principal.
+
+## Dia 5 (01/12/2025)
+(aguardando conteúdo)
