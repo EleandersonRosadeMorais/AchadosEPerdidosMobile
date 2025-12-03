@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/txtNomeItem"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:paddingTop="15dp"
+        android:text="Nome do Item"
+        android:textColor="@color/blue"
+        android:textSize="25sp"
+        android:textStyle="bold|italic" />
 
-        <TextView
-            android:id="@+id/txtNomeItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:text="Nome do Item"
-            android:textColor="@color/blue"
-            android:textSize="25sp"
-            android:textStyle="bold|italic" />
+    <TextView
+        android:id="@+id/txtLocalizacao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:text="Localização: "
+        android:textColor="#333333"
+        android:textSize="22sp" />
 
-        <TextView
-            android:id="@+id/txtLocalizacao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:text="Localização: "
-            android:textColor="#333333"
-            android:textSize="22sp" />
+    <TextView
+        android:id="@+id/txtEncontrado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:text="Encontrado em: "
+        android:textColor="#333333"
+        android:textSize="22sp" />
 
-        <TextView
-            android:id="@+id/txtEncontrado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:text="Encontrado em: "
-            android:textColor="#333333"
-            android:textSize="22sp" />
+    <TextView
+        android:id="@+id/txtDataEncontrada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:text="Data encontrado: "
+        android:textColor="#333333"
+        android:textSize="22sp" />
 
-        <TextView
-            android:id="@+id/txtDataEncontrada"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:text="Data encontrado: "
-            android:textColor="#333333"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/txtTipo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:paddingBottom="15dp"
-            android:text="Tipo: "
-            android:textColor="#333333"
-            android:textSize="22sp" />
+    <TextView
+        android:id="@+id/txtTipo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:paddingBottom="15dp"
+        android:text="Tipo: "
+        android:textColor="#333333"
+        android:textSize="22sp" />
 
     <ImageView
         android:id="@+id/imgMiniatura"
@@ -61,4 +61,31 @@
         android:contentDescription="Miniatura do item"
         android:scaleType="centerCrop"
         android:src="@drawable/moletom" />
+
+    <!-- 🔹 Botões de ação -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="12dp">
+
+        <Button
+            android:id="@+id/btnEditar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Editar"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnExcluir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Excluir"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/red"/>
+    </LinearLayout>
+
 </LinearLayout>

@@ -1,9 +1,10 @@
-package com.ulbra.achadoseperdidos;
+package com.ulbra.achadoseperdidos.adapter;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,9 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.ulbra.achadoseperdidos.R;
+import com.ulbra.achadoseperdidos.activities.ImageFullActivity;
+import com.ulbra.achadoseperdidos.activities.RegistroItemActivity;
+import com.ulbra.achadoseperdidos.api.ApiClient;
+import com.ulbra.achadoseperdidos.api.ApiService;
 import com.ulbra.achadoseperdidos.models.Item;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
     private List<Item> listaItens;
@@ -55,6 +65,36 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             intent.putExtra("imageUrl", item.getImagemUrl());
             holder.itemView.getContext().startActivity(intent);
         });
+
+        // 🔹 Botão Editar → abre RegistroItemActivity com dados do item
+        holder.btnEditar.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), RegistroItemActivity.class);
+            intent.putExtra("itemId", item.getId()); // supondo que Item tenha getId()
+            holder.itemView.getContext().startActivity(intent);
+        });
+
+        // 🔹 Botão Excluir → chama API e remove da lista
+        holder.btnExcluir.setOnClickListener(v -> {
+            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+            Call<com.ulbra.achadoseperdidos.models.ApiResponse> call = apiService.excluirItem(item.getId());
+
+            call.enqueue(new Callback<com.ulbra.achadoseperdidos.models.ApiResponse>() {
+                @Override
+                public void onResponse(Call<com.ulbra.achadoseperdidos.models.ApiResponse> call,
+                                       Response<com.ulbra.achadoseperdidos.models.ApiResponse> response) {
+                    if (response.isSuccessful()) {
+                        listaItens.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, listaItens.size());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<com.ulbra.achadoseperdidos.models.ApiResponse> call, Throwable t) {
+                    // Aqui você pode mostrar um Toast ou logar o erro
+                }
+            });
+        });
     }
 
     @Override
@@ -65,6 +105,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtNomeItem, txtEncontrado, txtDataEncontrada, txtLocalizacao, txtTipo;
         ImageView imgItem;
+        Button btnEditar, btnExcluir;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +115,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             txtDataEncontrada = itemView.findViewById(R.id.txtDataEncontrada);
             txtTipo = itemView.findViewById(R.id.txtTipo);
             imgItem = itemView.findViewById(R.id.imgMiniatura);
+            btnEditar = itemView.findViewById(R.id.btnEditar);
+            btnExcluir = itemView.findViewById(R.id.btnExcluir);
         }
     }
 }

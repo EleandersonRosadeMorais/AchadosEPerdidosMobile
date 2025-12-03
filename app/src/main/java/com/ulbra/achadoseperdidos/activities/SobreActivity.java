@@ -1,9 +1,11 @@
-package com.ulbra.achadoseperdidos;
+package com.ulbra.achadoseperdidos.activities;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ulbra.achadoseperdidos.R;
 
 public class SobreActivity extends AppCompatActivity {
 

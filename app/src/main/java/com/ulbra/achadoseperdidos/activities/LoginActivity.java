@@ -1,4 +1,4 @@
-package com.ulbra.achadoseperdidos;
+package com.ulbra.achadoseperdidos.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ulbra.achadoseperdidos.R;
 import com.ulbra.achadoseperdidos.api.ApiClient;
 import com.ulbra.achadoseperdidos.api.ApiService;
 import com.ulbra.achadoseperdidos.models.ApiResponse;

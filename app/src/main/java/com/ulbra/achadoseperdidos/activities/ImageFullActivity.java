@@ -1,4 +1,4 @@
-package com.ulbra.achadoseperdidos;
+package com.ulbra.achadoseperdidos.activities;
 
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.ulbra.achadoseperdidos.R;
 
 public class ImageFullActivity extends AppCompatActivity {
 
