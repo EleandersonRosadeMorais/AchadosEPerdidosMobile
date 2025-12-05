@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import com.ulbra.achadoseperdidos.adapter.ItemAdapter;
 import com.ulbra.achadoseperdidos.R;
-import com.ulbra.achadoseperdidos.UsuarioSession;
 import com.ulbra.achadoseperdidos.api.ApiClient;
 import com.ulbra.achadoseperdidos.api.ApiService;
 import com.ulbra.achadoseperdidos.models.Item;
@@ -44,14 +43,6 @@ public class MenuActivity extends AppCompatActivity {
     LinearLayout filterContainer;
     EditText editFiltro;
     Spinner spinnerFiltro;
-
-    private void abrirRegistroItem() {
-        startActivity(new Intent(MenuActivity.this, RegistroItemActivity.class));
-    }
-
-    private void abrirLogin() {
-        startActivity(new Intent(MenuActivity.this, LoginActivity.class));
-    }
 
     private void abrirSobre() {
         startActivity(new Intent(MenuActivity.this, SobreActivity.class));
@@ -96,7 +87,6 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-
     // 🔹 Aplica filtro conforme texto e critério
     private void aplicarFiltro(String texto) {
         if (texto == null || texto.isEmpty()) {
@@ -139,30 +129,16 @@ public class MenuActivity extends AppCompatActivity {
         int drawerWidth = (int) (screenWidth * 0.5);
         navigationView.getLayoutParams().width = drawerWidth;
 
-        // 🔹 Configuração do menu conforme login
-        if (UsuarioSession.isLoggedIn(this)) {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.menu_logado);
-        } else {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.menu_nao_logado);
-        }
+        // 🔹 Configuração do menu (apenas SOBRE)
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.menu_lateral);
 
         btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.nav_funcionario) {
-                startActivity(new Intent(this, CadastroAdminActivity.class));
-            } else if (id == R.id.nav_registro) {
-                abrirRegistroItem();
-            } else if (id == R.id.nav_sair) {
-                UsuarioSession.logout(this);
-                recreate();
-            } else if (id == R.id.nav_conectar) {
-                abrirLogin();
-            } else if (id == R.id.nav_sobre) {
+            if (id == R.id.nav_sobre) {
                 abrirSobre();
             }
 

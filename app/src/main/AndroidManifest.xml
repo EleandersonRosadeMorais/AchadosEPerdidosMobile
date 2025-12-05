@@ -23,10 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RegistroItemActivity" />
-        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.SobreActivity" />
-        <activity android:name=".activities.CadastroAdminActivity" />
+        <activity android:name=".activities.ImageFullActivity"/>
 
     </application>
 

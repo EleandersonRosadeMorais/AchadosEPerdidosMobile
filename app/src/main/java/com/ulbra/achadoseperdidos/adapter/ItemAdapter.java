@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.ulbra.achadoseperdidos.R;
 import com.ulbra.achadoseperdidos.activities.ImageFullActivity;
-import com.ulbra.achadoseperdidos.activities.RegistroItemActivity;
 import com.ulbra.achadoseperdidos.api.ApiClient;
 import com.ulbra.achadoseperdidos.api.ApiService;
 import com.ulbra.achadoseperdidos.models.Item;
@@ -69,41 +68,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             intent.putExtra("imageUrl", item.getImagemUrl());
             holder.itemView.getContext().startActivity(intent);
         });
-
-        // 🔹 Botão Editar → abre RegistroItemActivity com dados do item
-        holder.btnEditar.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), RegistroItemActivity.class);
-            intent.putExtra("itemId", item.getId());
-            holder.itemView.getContext().startActivity(intent);
-        });
-
-        // 🔹 Botão Excluir → chama API e remove da lista
-        holder.btnExcluir.setOnClickListener(v -> {
-            ApiService apiService = ApiClient.getClient().create(ApiService.class);
-            Call<ApiResponse> call = apiService.excluirItem(item.getId());
-
-            call.enqueue(new Callback<ApiResponse>() {
-                @Override
-                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                    if (response.isSuccessful()) {
-                        listaItens.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, listaItens.size());
-                        Toast.makeText(holder.itemView.getContext(),
-                                "Item excluído com sucesso", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(holder.itemView.getContext(),
-                                "Erro ao excluir item", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ApiResponse> call, Throwable t) {
-                    Toast.makeText(holder.itemView.getContext(),
-                            "Falha na conexão: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
     }
 
     @Override
@@ -114,7 +78,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView txtNomeItem, txtEncontrado, txtDataEncontrada, txtLocalizacao, txtTipo;
         ImageView imgItem;
-        Button btnEditar, btnExcluir;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -124,8 +87,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             txtDataEncontrada = itemView.findViewById(R.id.txtDataEncontrada);
             txtTipo = itemView.findViewById(R.id.txtTipo);
             imgItem = itemView.findViewById(R.id.imgMiniatura);
-            btnEditar = itemView.findViewById(R.id.btnEditar);
-            btnExcluir = itemView.findViewById(R.id.btnExcluir);
         }
     }
 }
