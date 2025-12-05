@@ -40,7 +40,7 @@ public class MenuActivity extends AppCompatActivity {
     NavigationView navigationView;
     ImageView btnMenu;
 
-    // 🔹 Elementos para filtro (sem botão)
+    // 🔹 Elementos para filtro
     LinearLayout filterContainer;
     EditText editFiltro;
     Spinner spinnerFiltro;
@@ -57,29 +57,45 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(new Intent(MenuActivity.this, SobreActivity.class));
     }
 
-    // 🔹 Busca itens via API (Retrofit + MySQL)
+    // 🔹 Busca itens via API
     private void carregarItensApi() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<List<Item>> call = apiService.listarItens();
 
-        call.enqueue(new Callback<List<Item>>() {
-            @Override
-            public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listaItens.clear();
-                    listaItens.addAll(response.body());
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.e("MenuActivity", "Erro ao carregar itens: " + response.code());
+        listaItens.clear(); // limpa antes de carregar
+
+        // 🔹 Exemplo: buscar IDs de 1 até 10
+        for (int id = 1; id <= 10; id++) {
+            final int itemId = id; // cópia final para usar dentro do callback
+
+            Call<Item> call = apiService.getItemById(itemId);
+
+            call.enqueue(new Callback<Item>() {
+                @Override
+                public void onResponse(Call<Item> call, Response<Item> response) {
+                    if (response.isSuccessful()) {
+                        Item item = response.body();
+
+                        // 🔹 Validação: só adiciona se não for nulo e tiver dados
+                        if (item != null && item.getNome() != null && !item.getNome().isEmpty()) {
+                            listaItens.add(item);
+                            adapter.notifyDataSetChanged();
+                            Log.d("MenuActivity", "Item ID=" + itemId + " carregado com sucesso");
+                        } else {
+                            Log.w("MenuActivity", "Item ID=" + itemId + " vazio, pulando...");
+                        }
+                    } else {
+                        Log.e("MenuActivity", "Erro ao carregar item ID=" + itemId + " -> " + response.code());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Item>> call, Throwable t) {
-                Log.e("MenuActivity", "Falha na conexão: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<Item> call, Throwable t) {
+                    Log.e("MenuActivity", "Falha ao carregar item ID=" + itemId + " -> " + t.getMessage());
+                }
+            });
+        }
     }
+
 
     // 🔹 Aplica filtro conforme texto e critério
     private void aplicarFiltro(String texto) {
@@ -92,9 +108,11 @@ public class MenuActivity extends AppCompatActivity {
         List<Item> filtrados = new ArrayList<>();
 
         for (Item item : listaItens) {
-            if (criterio.equals("Nome") && item.getNomeItem().toLowerCase().contains(texto.toLowerCase())) {
+            if (criterio.equals("Nome") && item.getNome().toLowerCase().contains(texto.toLowerCase())) {
                 filtrados.add(item);
             } else if (criterio.equals("Tipo") && item.getTipo().toLowerCase().contains(texto.toLowerCase())) {
+                filtrados.add(item);
+            } else if (criterio.equals("Status") && item.getStatus().toLowerCase().contains(texto.toLowerCase())) {
                 filtrados.add(item);
             }
         }
@@ -152,7 +170,7 @@ public class MenuActivity extends AppCompatActivity {
             return true;
         });
 
-        // 🔹 Configuração do filtro (sempre visível)
+        // 🔹 Configuração do filtro
         filterContainer = findViewById(R.id.filterContainer);
         editFiltro = findViewById(R.id.editFiltro);
         spinnerFiltro = findViewById(R.id.spinnerFiltro);

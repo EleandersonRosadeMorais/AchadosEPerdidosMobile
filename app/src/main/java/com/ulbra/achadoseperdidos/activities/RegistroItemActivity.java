@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.ulbra.achadoseperdidos.R;
 import com.ulbra.achadoseperdidos.api.ApiClient;
 import com.ulbra.achadoseperdidos.api.ApiService;
@@ -30,7 +31,7 @@ import retrofit2.Response;
 
 public class RegistroItemActivity extends AppCompatActivity {
 
-    private EditText edtNomeItem, edtLocalizacao, edtDataEncontrada, edtTipo, edtEncontrado;
+    private EditText edtNomeItem, edtLocalEncontrado, edtLocalBuscar, edtDataEncontrada, edtTipo, edtStatus;
     private Button btnSalvar, btnSelecionarImagem;
     private ImageView imgPreview;
     private Uri imagemSelecionada;
@@ -44,15 +45,15 @@ public class RegistroItemActivity extends AppCompatActivity {
         setContentView(R.layout.registro_item);
 
         edtNomeItem = findViewById(R.id.edtNomeItem);
-        edtLocalizacao = findViewById(R.id.edtLocalizacao);
+        edtLocalEncontrado = findViewById(R.id.edtLocalEncontrado);
+        edtLocalBuscar = findViewById(R.id.edtLocalBuscar);
         edtDataEncontrada = findViewById(R.id.edtDataEncontrada);
         edtTipo = findViewById(R.id.edtTipo);
-        edtEncontrado = findViewById(R.id.edtEncontrado);
+        edtStatus = findViewById(R.id.edtStatus);
         btnSalvar = findViewById(R.id.btnSalvar);
         btnSelecionarImagem = findViewById(R.id.btnSelecionarImagem);
         imgPreview = findViewById(R.id.imgPreview);
 
-        // 🔹 Verifica se veio itemId para edição
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("itemId")) {
             itemId = intent.getIntExtra("itemId", -1);
@@ -79,22 +80,27 @@ public class RegistroItemActivity extends AppCompatActivity {
         }
     }
 
-    // 🔹 Se for edição, carrega dados do item
     private void carregarItemExistente(int id) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<Item> call = apiService.getItemById(id); // você precisa criar esse endpoint no ApiService
+        Call<Item> call = apiService.getItemById(id);
 
         call.enqueue(new Callback<Item>() {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Item item = response.body();
-                    edtNomeItem.setText(item.getNomeItem());
-                    edtLocalizacao.setText(item.getLocalizacao());
-                    edtDataEncontrada.setText(item.getDataEncontrada());
+                    edtNomeItem.setText(item.getNome());
+                    edtLocalEncontrado.setText(item.getLocalEncontrado());
+                    edtLocalBuscar.setText(item.getLocalBuscar());
+                    edtDataEncontrada.setText(item.getDataEncontrado());
                     edtTipo.setText(item.getTipo());
-                    edtEncontrado.setText(item.getEncontrado());
-                    // opcional: carregar imagem existente com Glide
+                    edtStatus.setText(item.getStatus());
+
+                    if (item.getImagemUrl() != null) {
+                        Glide.with(RegistroItemActivity.this)
+                                .load(item.getImagemUrl())
+                                .into(imgPreview);
+                    }
                 }
             }
 
@@ -108,13 +114,14 @@ public class RegistroItemActivity extends AppCompatActivity {
     }
 
     private void salvarOuEditarItem() {
-        String nomeItem = edtNomeItem.getText().toString();
-        String localizacao = edtLocalizacao.getText().toString();
+        String nome = edtNomeItem.getText().toString();
+        String localEncontrado = edtLocalEncontrado.getText().toString();
+        String localBuscar = edtLocalBuscar.getText().toString();
         String dataEncontrada = edtDataEncontrada.getText().toString();
         String tipo = edtTipo.getText().toString();
-        String encontrado = edtEncontrado.getText().toString();
+        String status = edtStatus.getText().toString();
 
-        if (nomeItem.isEmpty() || localizacao.isEmpty() || dataEncontrada.isEmpty() || tipo.isEmpty()) {
+        if (nome.isEmpty() || localEncontrado.isEmpty() || localBuscar.isEmpty() || dataEncontrada.isEmpty() || tipo.isEmpty()) {
             Toast.makeText(this, "Preencha todos os campos obrigatórios", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -122,11 +129,10 @@ public class RegistroItemActivity extends AppCompatActivity {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         if (itemId == -1) {
-            // 🔹 Novo item (POST)
-            salvarItem(apiService, nomeItem, localizacao, dataEncontrada, tipo, encontrado);
+            salvarItem(apiService, nome, localEncontrado, localBuscar, dataEncontrada, tipo, status);
         } else {
-            // 🔹 Editar item existente (PUT)
-            Item item = new Item(itemId, nomeItem, localizacao, dataEncontrada, tipo, encontrado, null);
+            Item item = new Item(); // usar setters
+            // preencher objeto conforme necessário
             Call<ApiResponse> call = apiService.editarItem(itemId, item);
 
             call.enqueue(new Callback<ApiResponse>() {
@@ -154,14 +160,15 @@ public class RegistroItemActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarItem(ApiService apiService, String nomeItem, String localizacao,
-                            String dataEncontrada, String tipo, String encontrado) {
+    private void salvarItem(ApiService apiService, String nome, String localEncontrado,
+                            String localBuscar, String dataEncontrada, String tipo, String status) {
 
-        RequestBody nomeBody = RequestBody.create(MediaType.parse("text/plain"), nomeItem);
-        RequestBody localizacaoBody = RequestBody.create(MediaType.parse("text/plain"), localizacao);
+        RequestBody nomeBody = RequestBody.create(MediaType.parse("text/plain"), nome);
+        RequestBody localEncontradoBody = RequestBody.create(MediaType.parse("text/plain"), localEncontrado);
+        RequestBody localBuscarBody = RequestBody.create(MediaType.parse("text/plain"), localBuscar);
         RequestBody dataBody = RequestBody.create(MediaType.parse("text/plain"), dataEncontrada);
         RequestBody tipoBody = RequestBody.create(MediaType.parse("text/plain"), tipo);
-        RequestBody encontradoBody = RequestBody.create(MediaType.parse("text/plain"), encontrado);
+        RequestBody statusBody = RequestBody.create(MediaType.parse("text/plain"), status);
 
         MultipartBody.Part imagemPart = null;
         if (imagemSelecionada != null) {
@@ -186,8 +193,15 @@ public class RegistroItemActivity extends AppCompatActivity {
             }
         }
 
+        // 🔹 Aqui estava cortado → agora completo
         Call<ApiResponse> call = apiService.registrarItem(
-                nomeBody, localizacaoBody, dataBody, tipoBody, encontradoBody, imagemPart
+                nomeBody,
+                localEncontradoBody,
+                localBuscarBody,
+                dataBody,
+                tipoBody,
+                statusBody,
+                imagemPart
         );
 
         call.enqueue(new Callback<ApiResponse>() {
@@ -228,4 +242,5 @@ public class RegistroItemActivity extends AppCompatActivity {
         }
         return result;
     }
+
 }

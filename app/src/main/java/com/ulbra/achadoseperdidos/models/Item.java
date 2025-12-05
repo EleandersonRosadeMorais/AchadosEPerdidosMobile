@@ -1,61 +1,49 @@
 package com.ulbra.achadoseperdidos.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Item {
     private int id;
-    private String nomeItem;
-    private String localizacao;
-    private String dataEncontrada;
+
+    @SerializedName("nome")
+    private String nome;
+
+    @SerializedName("data_encontrado")
+    private String dataEncontrado;
+
+    @SerializedName("local_encontrado")
+    private String localEncontrado;
+
+    @SerializedName("local_buscar")
+    private String localBuscar;
+
     private String tipo;
+
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("data_cadastro")
+    private String dataCadastro;
+
+    @SerializedName("imagem")
     private String imagemUrl;
-    private String encontrado;
 
-    // 🔹 Construtor vazio (necessário para Retrofit/Gson)
-    public Item() {}
-
-    // 🔹 Construtor completo
-    public Item(int id, String nomeItem, String localizacao, String dataEncontrada,
-                String tipo, String imagemUrl, String encontrado) {
-        this.id = id;
-        this.nomeItem = nomeItem;
-        this.localizacao = localizacao;
-        this.dataEncontrada = dataEncontrada;
-        this.tipo = tipo;
-        this.imagemUrl = imagemUrl;
-        this.encontrado = encontrado;
-    }
-
-    // 🔹 Getters e Setters
+    // Getters e Setters
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
 
-    public String getNomeItem() { return nomeItem; }
-    public void setNomeItem(String nomeItem) { this.nomeItem = nomeItem; }
+    public String getNome() { return nome; }
 
-    public String getLocalizacao() { return localizacao; }
-    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
+    public String getDataEncontrado() { return dataEncontrado; }
 
-    public String getDataEncontrada() { return dataEncontrada; }
-    public void setDataEncontrada(String dataEncontrada) { this.dataEncontrada = dataEncontrada; }
+    public String getLocalEncontrado() { return localEncontrado; }
+
+    public String getLocalBuscar() { return localBuscar; }
 
     public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public String getStatus() { return status; }
+
+    public String getDataCadastro() { return dataCadastro; }
 
     public String getImagemUrl() { return imagemUrl; }
-    public void setImagemUrl(String imagemUrl) { this.imagemUrl = imagemUrl; }
-
-    public String getEncontrado() { return encontrado; }
-    public void setEncontrado(String encontrado) { this.encontrado = encontrado; }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", nomeItem='" + nomeItem + '\'' +
-                ", localizacao='" + localizacao + '\'' +
-                ", dataEncontrada='" + dataEncontrada + '\'' +
-                ", tipo='" + tipo + '\'' +
-                ", imagemUrl='" + imagemUrl + '\'' +
-                ", encontrado='" + encontrado + '\'' +
-                '}';
-    }
 }

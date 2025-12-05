@@ -4,36 +4,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Nome -->
     <EditText
         android:id="@+id/edtNomeItem"
         android:hint="Nome do Item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Local onde foi encontrado -->
     <EditText
-        android:id="@+id/edtLocalizacao"
-        android:hint="Localização"
+        android:id="@+id/edtLocalEncontrado"
+        android:hint="Local onde foi encontrado"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Local onde buscar -->
+    <EditText
+        android:id="@+id/edtLocalBuscar"
+        android:hint="Local para buscar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Data encontrada -->
     <EditText
         android:id="@+id/edtDataEncontrada"
-        android:hint="Data Encontrada"
+        android:hint="Data em que foi encontrado"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Tipo -->
     <EditText
         android:id="@+id/edtTipo"
-        android:hint="Tipo"
+        android:hint="Tipo do item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Status -->
     <EditText
-        android:id="@+id/edtEncontrado"
-        android:hint="Onde foi encontrado"
+        android:id="@+id/edtStatus"
+        android:hint="Status (ex: disponível)"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Botão selecionar imagem -->
     <Button
         android:id="@+id/btnSelecionarImagem"
         android:text="Selecionar Imagem"
@@ -41,12 +54,14 @@
         android:backgroundTint="@color/beige"
         android:layout_height="wrap_content"/>
 
+    <!-- Preview da imagem -->
     <ImageView
         android:id="@+id/imgPreview"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"/>
 
+    <!-- Botão salvar -->
     <Button
         android:id="@+id/btnSalvar"
         android:text="Salvar Item"

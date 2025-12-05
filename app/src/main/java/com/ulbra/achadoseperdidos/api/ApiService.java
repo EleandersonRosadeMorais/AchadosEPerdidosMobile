@@ -18,41 +18,43 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
     // 🔹 Administrador
-    @POST("/admin")
+    @POST("admin")
     Call<ApiResponse> cadastrarAdmin(@Body Administrador admin);
 
-    @POST("/login")
+    @POST("login")
     Call<ApiResponse> login(@Body LoginRequest request);
 
-    // 🔹 Itens
-    @GET("/items")
+    // 🔹 Itens (lista completa)
+    @GET("items")
     Call<List<Item>> listarItens();
 
     // 🔹 Registrar item com imagem (Multipart)
     @Multipart
-    @POST("/items")
+    @POST("items")
     Call<ApiResponse> registrarItem(
-            @Part("nomeItem") RequestBody nomeItem,
-            @Part("localizacao") RequestBody localizacao,
-            @Part("dataEncontrada") RequestBody dataEncontrada,
+            @Part("nome") RequestBody nome,
+            @Part("local_encontrado") RequestBody localEncontrado,
+            @Part("local_buscar") RequestBody localBuscar,
+            @Part("data_encontrado") RequestBody dataEncontrado,
             @Part("tipo") RequestBody tipo,
-            @Part("encontrado") RequestBody encontrado,
+            @Part("status") RequestBody status,
             @Part MultipartBody.Part imagem
     );
 
-    // 🔹 Novo endpoint para buscar item por ID
-    @GET("/items/{id}")
-    Call<Item> getItemById(@Path("id") int id);
+    // 🔹 Buscar item por ID (endpoint PHP específico)
+    @GET("JSONApiFeed.php")
+    Call<Item> getItemById(@Query("id") int id);
 
     // 🔹 Excluir item
-    @DELETE("/items/{id}")
+    @DELETE("items/{id}")
     Call<ApiResponse> excluirItem(@Path("id") int id);
 
     // 🔹 Editar item
-    @PUT("/items/{id}")
+    @PUT("items/{id}")
     Call<ApiResponse> editarItem(@Path("id") int id, @Body Item item);
 }
