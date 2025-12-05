@@ -5,4 +5,12 @@
     <color name="beige">#678C2B</color>
     <color name="red">#D70E0E</color>
     <color name="black">#000000</color>
+    <color name="primary_blue">#02416D</color>        <!-- Azul principal do header e botões -->
+    <color name="primary_blue_dark">#013354</color>   <!-- Azul mais escuro para hover -->
+    <color name="background_light">#f8f8f8</color>    <!-- Preto para textos -->
+    <color name="gray_text">#555555</color>           <!-- Cinza para labels -->
+    <color name="gray_border">#CCCCCC</color>         <!-- Cinza para bordas de inputs -->
+    <color name="footer_bg">#333333</color>           <!-- Fundo do footer -->
+    <color name="footer_text">#AAAAAA</color>         <!-- Texto secundário do footer -->
+    <color name="error_red">#FF0D00</color>           <!-- Mensagens de erro -->
 </resources>

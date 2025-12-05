@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="15dp"
         android:text="Nome do Item"
-        android:textColor="@color/blue"
+        android:textColor="@color/primary_blue"
         android:textSize="25sp"
         android:textStyle="bold|italic" />
 
